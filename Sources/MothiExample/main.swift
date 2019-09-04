@@ -184,4 +184,24 @@ app.use("/", method: .SEARCH) { (req, res) -> Void in
     res.status = .found
     res.send(["searching": req.param("q")])
 }
-app.listen(port:1337)
+
+//read the command line, set host & port
+//or you can just use:
+
+//app.listen(port: 1337)
+
+let host: String
+if CommandLine.arguments.count > 1 {
+    host = CommandLine.arguments[1]
+} else {
+    host = "localhost"
+}
+
+let port: Int
+if CommandLine.arguments.count > 2 {
+    port = Int(CommandLine.arguments[2]) ?? 1337
+} else {
+    port = 1337
+}
+
+app.listen(host: host, port: port)
