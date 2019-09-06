@@ -13,7 +13,7 @@ open class Request {
     
     public var bodyDecoder: BodyDecoder?
     
-    public var method: NIOHTTP1.HTTPMethod {
+    public var method: HTTPMethod {
             return header.method
     }
     

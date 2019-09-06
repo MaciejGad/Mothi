@@ -28,6 +28,20 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "Mothi::Yggdrasil"
+               BuildableName = "Yggdrasil.framework"
+               BlueprintName = "Yggdrasil"
+               ReferencedContainer = "container:Mothi.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "Mothi::MothiExample"
                BuildableName = "MothiExample"
                BlueprintName = "MothiExample"
@@ -46,9 +60,29 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "Mothi::MothiExampleTests"
+               BuildableName = "MothiExampleTests.xctest"
+               BlueprintName = "MothiExampleTests"
+               ReferencedContainer = "container:Mothi.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "Mothi::MothiTests"
                BuildableName = "MothiTests.xctest"
                BlueprintName = "MothiTests"
+               ReferencedContainer = "container:Mothi.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "Mothi::YggdrasilTests"
+               BuildableName = "YggdrasilTests.xctest"
+               BlueprintName = "YggdrasilTests"
                ReferencedContainer = "container:Mothi.xcodeproj">
             </BuildableReference>
          </TestableReference>

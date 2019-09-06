@@ -15,12 +15,12 @@ Vingnis at vígþroti.
 }
 
 //register JSON handling middlewares
-app.use(JSONOutput)
-app.use(JSONInput)
+app.use(middleware: JSONOutput)
+app.use(middleware: JSONInput)
 
 //you can register
 //`Querystring` middleware
-app.use(Querystring)
+app.use(middleware: Querystring)
 
 //and then use it:
 app.get("/param") { (req) -> [String : String] in
@@ -47,7 +47,7 @@ app.use { (req, res) in
 }
 
 //or display request body
-app.use { (req, res) -> Void in
+app.use(method: .POST) { (req, res) -> Void in
     guard let body = req.body else {
         return
     }
@@ -189,6 +189,8 @@ app.use("/", method: .SEARCH) { (req, res) -> Void in
 //or you can just use:
 
 //app.listen(port: 1337)
+
+//app.dumpTree()
 
 let host: String
 if CommandLine.arguments.count > 1 {

@@ -26,6 +26,7 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
+      codeCoverageEnabled = "YES"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
@@ -35,6 +36,27 @@
                BlueprintIdentifier = "Mothi::MothiTests"
                BuildableName = "MothiTests.xctest"
                BlueprintName = "MothiTests"
+               ReferencedContainer = "container:Mothi.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "Mothi::YggdrasilTests"
+               BuildableName = "YggdrasilTests.xctest"
+               BlueprintName = "YggdrasilTests"
+               ReferencedContainer = "container:Mothi.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            testExecutionOrdering = "random">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "Mothi::MothiExampleTests"
+               BuildableName = "MothiExampleTests.xctest"
+               BlueprintName = "MothiExampleTests"
                ReferencedContainer = "container:Mothi.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -62,16 +84,6 @@
             ReferencedContainer = "container:Mothi.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "localhost 1338"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "127.0.0.1"
-            isEnabled = "YES">
-         </CommandLineArgument>
-      </CommandLineArguments>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>

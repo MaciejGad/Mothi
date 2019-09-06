@@ -38,53 +38,6 @@ open class Server: Router {
         }
     }
     
-    final class HTTPHandler: ChannelInboundHandler {
-        typealias InboundIn = HTTPServerRequestPart
-        
-        let router: Router
-        var buffer = ByteBufferAllocator().buffer(capacity: 4096)
-        var requestHead: HTTPRequestHead? = nil
-        
-        init(router: Router) {
-            self.router = router
-        }
-        
-        func channelRead(context: ChannelHandlerContext, data: NIOAny) {
-            let reqPart = unwrapInboundIn(data)
-            switch reqPart {
-            case .head(let head):
-                requestHead = head
-            case .body(var buffer):
-                self.buffer.writeBuffer(&buffer)
-            case .end:
-                let response = Response()
-                let loop = context.eventLoop
-                
-                loop
-                    .makeSucceededFuture(response)
-                    .flatMapThrowing { response -> (Request, Response) in
-                        guard let header = self.requestHead else {
-                            throw HTTPError.badRequest
-                        }
-                        let request  = Request(header: header)
-                        if self.buffer.readableBytes > 0 {
-                            request.body = self.buffer.getData(at: 0, length: self.buffer.readableBytes)
-                        }
-                        return (request, response)
-                    }.flatMap { (request, response) in
-                        self.router.handle(request: request, response: response, loop: loop)
-                    }.whenComplete { result in
-                        switch result {
-                        case .success(let response):
-                            response.save(channel: context.channel)
-                        case .failure(let error):
-                            print("Error: \(error)")
-                            response.send(HTTPError.wrapp(error))
-                            response.save(channel: context.channel)
-                        }
-                    }
-            }
-        }
-    }
+    
 
 }
