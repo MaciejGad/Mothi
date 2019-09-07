@@ -36,7 +36,7 @@ final class MothiTests: XCTestCase {
             
             expectation.fulfill()
         }.resume()
-        self.waitForExpectations(timeout: 5000, handler: nil)
+        self.waitForExpectations(timeout: 5, handler: nil)
 
     }
 
