@@ -3,8 +3,6 @@ import XCTest
 
 final class MothiTests: XCTestCase {
     
-    let serverQueue: DispatchQueue = .init(label: "server_queue", qos: .background, attributes: .concurrent)
-    
     func testToooMaaaanyEndpoints() {
         let sut = Server()
         
@@ -19,7 +17,7 @@ final class MothiTests: XCTestCase {
         let duration = now() - startTime
         print(String(format: "middleware creating time %0.2f s for \(maxNumber) endpoints",  duration))
         
-        let port = 1337 + Int.random(in: 0..<100)
+        let port = 1337
         sut.listen(host:"localhost" , port: port, asynch: true)
         let expectation = self.expectation(description: "API call")
         let random = Int.random(in: 0..<maxNumber)
@@ -52,7 +50,7 @@ final class MothiTests: XCTestCase {
         }
     
         
-        let port = 1337 + Int.random(in: 0..<100)
+        let port = 1337
         sut.listen(host:"localhost" , port: port, asynch: true)
         guard let url = URL(string: "http://localhost:\(port)/test") else {
             XCTFail("Wrong url")

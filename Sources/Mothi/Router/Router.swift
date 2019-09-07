@@ -12,6 +12,13 @@ open class Router {
     let loopGroup =
         MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
     
+    defer {
+        do {
+            try loopGroup.syncShutdownGracefully()
+        } catch {
+            print("\(error)")
+        }
+    }
     
     private let tree = Tree<Middleware, HTTPMethod>()
     
