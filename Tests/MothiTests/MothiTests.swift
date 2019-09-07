@@ -7,14 +7,14 @@ final class MothiTests: XCTestCase {
         let sut = Server()
         
         let maxNumber = 10_000
-        var startTime = CACurrentMediaTime()
+        var startTime = now()
         for i in 0..<maxNumber {
             sut.get("/test/\(i)") { (req, res, loop)  in
                 res.send("Works!")
                 return loop.makeSucceededFuture(.next)
             }
         }
-        print(String(format: "middleware creating time %0.2f ms for \(maxNumber) endpoints", (CACurrentMediaTime() - startTime) * 1000))
+        print(String(format: "middleware creating time %0.2f ms for \(maxNumber) endpoints", (now() - startTime) * 1000))
         
         let port = 1337 + Int.random(in: 0..<100)
         DispatchQueue.global().async {
@@ -28,9 +28,9 @@ final class MothiTests: XCTestCase {
             XCTFail("Wrong url")
             return
         }
-        startTime = CACurrentMediaTime()
+        startTime = now()
         URLSession.shared.dataTask(with: url) { (data, response, error) in
-            print(String(format: "response time %0.2f ms", (CACurrentMediaTime() - startTime) * 1000))
+            print(String(format: "response time %0.2f ms", (now() - startTime) * 1000))
             XCTAssertNil(error)
             XCTAssertEqual((response as? HTTPURLResponse)?.statusCode, 200)
             
@@ -62,11 +62,11 @@ final class MothiTests: XCTestCase {
             return
         }
         
-        let startTime = CACurrentMediaTime()
+        let startTime = now() //
         for _ in 0..<maxNumber {
             _ = try! Data(contentsOf: url)
         }
-        let time = (CACurrentMediaTime() - startTime)
+        let time = (now() - startTime)
         print(String(format: "response time %0.2f s for \(maxNumber) request", time))
         print(String(format: "avg response time %0.2f ms", time/Double(maxNumber) * 1000 ))
     
@@ -75,4 +75,8 @@ final class MothiTests: XCTestCase {
         ("testToooMaaaanyEndpoints", testToooMaaaanyEndpoints),
         ("testResponseTime", testResponseTime)
     ]
+}
+
+@inline(__always) func now() -> TimeInterval {
+    return Date.timeIntervalSinceReferenceDate
 }
