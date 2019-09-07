@@ -49,7 +49,7 @@ final class MothiExampleTests: XCTestCase {
     }
     
     func testThrow() throws {
-        try get(path: "/throw", expected: #"{"message":"Just testing","code":500}"#, statusCode: 500)
+        try get(path: "/throw", statusCode: 500)
     }
     
     func testCustomObjectEncode() throws {
