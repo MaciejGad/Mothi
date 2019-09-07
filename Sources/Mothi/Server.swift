@@ -49,7 +49,7 @@ open class Server: Router {
     deinit {
         do {
             try serverChannel?.close(mode: .all).wait()
-        }.catch {
+        } catch {
             print("\(error)")
         }
     }
