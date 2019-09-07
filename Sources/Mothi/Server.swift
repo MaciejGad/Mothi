@@ -5,7 +5,7 @@ import NIOFoundationCompat
 
 open class Server: Router {
 
-    open func listen(host:String = "localhost", port: Int) {
+    open func listen(host:String = "localhost", port: Int, asynch: Bool = false) {
         let reuseAddrOpt = ChannelOptions.socket(
             SocketOptionLevel(SOL_SOCKET),
             SO_REUSEADDR)
@@ -30,8 +30,13 @@ open class Server: Router {
                 try bootstrap.bind(host: host, port: port)
                     .wait()
             print("Server running on:", serverChannel.localAddress!)
-            
-            try serverChannel.closeFuture.wait() // runs forever
+            if asynch {
+                 serverChannel.closeFuture.whenFailure({ error in
+                    print("error: \(error)")
+                })
+            } else {
+                try serverChannel.closeFuture.wait() // runs forever
+            }
         }
         catch {
             fatalError("failed to start server: \(error)")

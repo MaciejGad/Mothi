@@ -20,10 +20,7 @@ final class MothiTests: XCTestCase {
         print(String(format: "middleware creating time %0.2f s for \(maxNumber) endpoints",  duration))
         
         let port = 1337 + Int.random(in: 0..<100)
-        serverQueue.async {
-            sut.listen(host:"localhost" , port: port)
-        }
-        usleep(100_000)
+        sut.listen(host:"localhost" , port: port, asynch: true)
         let expectation = self.expectation(description: "API call")
         let random = Int.random(in: 0..<maxNumber)
         print("selected endpoint: /test/\(random)")
@@ -56,10 +53,7 @@ final class MothiTests: XCTestCase {
     
         
         let port = 1337 + Int.random(in: 0..<100)
-        serverQueue.async {
-            sut.listen(host:"localhost" , port: port)
-        }
-        usleep(1_000_000)
+        sut.listen(host:"localhost" , port: port, asynch: true)
         guard let url = URL(string: "http://localhost:\(port)/test") else {
             XCTFail("Wrong url")
             return
