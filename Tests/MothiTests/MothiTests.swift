@@ -3,10 +3,12 @@ import XCTest
 
 final class MothiTests: XCTestCase {
     
+    let serverQueue: DispatchQueue = .init(label: "server_queue", qos: .background, attributes: .concurrent)
+    
     func testToooMaaaanyEndpoints() {
         let sut = Server()
         
-        let maxNumber = 10_000
+        let maxNumber = 100_000
         var startTime = now()
         for i in 0..<maxNumber {
             sut.get("/test/\(i)") { (req, res, loop)  in
@@ -14,10 +16,11 @@ final class MothiTests: XCTestCase {
                 return loop.makeSucceededFuture(.next)
             }
         }
-        print(String(format: "middleware creating time %0.2f ms for \(maxNumber) endpoints", (now() - startTime) * 1000))
+        let duration = now() - startTime
+        print(String(format: "middleware creating time %0.2f s for \(maxNumber) endpoints",  duration))
         
         let port = 1337 + Int.random(in: 0..<100)
-        DispatchQueue.global().async {
+        serverQueue.async {
             sut.listen(host:"localhost" , port: port)
         }
         usleep(100_000)
@@ -40,7 +43,7 @@ final class MothiTests: XCTestCase {
 
     }
 
-    func testResponseTime() {
+    func testResponseTime() throws {
         let sut = Server()
         
         let maxNumber = 100
@@ -53,18 +56,18 @@ final class MothiTests: XCTestCase {
     
         
         let port = 1337 + Int.random(in: 0..<100)
-        DispatchQueue.global().async {
+        serverQueue.async {
             sut.listen(host:"localhost" , port: port)
         }
-        usleep(100_000)
+        usleep(1_000_000)
         guard let url = URL(string: "http://localhost:\(port)/test") else {
             XCTFail("Wrong url")
             return
         }
         
-        let startTime = now() //
+        let startTime = now()
         for _ in 0..<maxNumber {
-            _ = try! Data(contentsOf: url)
+            _ = try Data(contentsOf: url)
         }
         let time = (now() - startTime)
         print(String(format: "response time %0.2f s for \(maxNumber) request", time))

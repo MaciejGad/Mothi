@@ -44,16 +44,18 @@ public final class Tree<Value, Key:Hashable> {
         if let wildcard = node.wildcard {
             out.append(contentsOf: withdraw(pathComponents: pathComponents, for: wildcard, key: key))
         }
-        if let staticNode = node.statics[value] {
+        if let staticNode = node.statics?[value] {
             out.append(contentsOf: withdraw(pathComponents: pathComponents, for: staticNode, key: key))
         }
-        for dynamicNode in node.dynamics.values {
-            let dyniamicMiddlewares = withdraw(pathComponents: pathComponents, for: dynamicNode, key: key)
-            let key = String(dynamicNode.value.dropFirst())
-            dyniamicMiddlewares.forEach {
-                $0.params[key] = value
+        if let dynamics = node.dynamics?.values {
+            for dynamicNode in dynamics {
+                let dyniamicMiddlewares = withdraw(pathComponents: pathComponents, for: dynamicNode, key: key)
+                let key = String(dynamicNode.value.dropFirst())
+                dyniamicMiddlewares.forEach {
+                    $0.params[key] = value
+                }
+                out.append(contentsOf: dyniamicMiddlewares)
             }
-            out.append(contentsOf: dyniamicMiddlewares)
         }
         return out
     }

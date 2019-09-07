@@ -8,8 +8,8 @@ final class Node<StorageValue, Key:Hashable> {
     
     
     //children
-    var statics: [String: Node] = [:]
-    var dynamics: [String: Node] = [:]
+    var statics: [String: Node]? = nil
+    var dynamics: [String: Node]? = nil
     var wildcard: Node? = nil
     
     var keyStorage:[Key: [Box<StorageValue>]] = [:]
@@ -46,12 +46,15 @@ final class Node<StorageValue, Key:Hashable> {
         }
     }
     
-    func createOrReuseNode(value: String, type: NodeType, container: inout [String: Node]) -> Node {
-        if let node = container[value] {
+    func createOrReuseNode(value: String, type: NodeType, container: inout [String: Node]?) -> Node {
+        if container == nil {
+            container = [:]
+        }
+        if let node = container?[value] {
             return node
         }
         let node = Node(value: value, type: type)
-        container[value] = node
+        container?[value] = node
         return node
     }
     
@@ -75,8 +78,8 @@ final class Node<StorageValue, Key:Hashable> {
     
     var leaf: Bool {
         return wildcard == nil
-            && statics.count == 0
-            && dynamics.count == 0
+            && statics == nil
+            && dynamics == nil
     }
 }
 
@@ -98,10 +101,10 @@ extension Node: Encodable {
         
         try container.encode(type, forKey: .type)
         try container.encode(value, forKey: .value)
-        if statics.count > 0 {
+        if statics?.count ?? 0 > 0 {
             try container.encode(statics, forKey: .statics)
         }
-        if dynamics.count > 0 {
+        if dynamics?.count ?? 0 > 0 {
             try container.encode(dynamics, forKey: .dynamics)
         }
         if let wildcard = wildcard {
