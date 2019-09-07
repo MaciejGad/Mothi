@@ -12,8 +12,8 @@ final class Node<StorageValue, Key:Hashable> {
     var dynamics: [String: Node]? = nil
     var wildcard: Node? = nil
     
-    var keyStorage:[Key: [Box<StorageValue>]] = [:]
-    var storage: [Box<StorageValue>] = []
+    var keyStorage:[Key: [Box<StorageValue>]]? = nil
+    var storage: [Box<StorageValue>]? = nil
 
     init(value: String, type: NodeType) {
         self.type = type
@@ -59,18 +59,24 @@ final class Node<StorageValue, Key:Hashable> {
     }
     
     func store(box: Box<StorageValue>) {
-        storage.append(box)
+        if storage == nil {
+            storage = []
+        }
+        storage?.append(box)
     }
     
     func store(box: Box<StorageValue>, key: Key) {
-        var keyList = keyStorage[key] ?? []
+        var keyList = keyStorage?[key] ?? []
         keyList.append(box)
-        keyStorage[key] = keyList
+        if keyStorage == nil {
+            keyStorage = [:]
+        }
+        keyStorage?[key] = keyList
     }
     
     func boxes(key: Key) -> [Box<StorageValue>] {
-        var output = storage
-        if let keyList = keyStorage[key] {
+        var output = storage ?? []
+        if let keyList = keyStorage?[key] {
             output.append(contentsOf: keyList)
         }
         return output
@@ -110,14 +116,14 @@ extension Node: Encodable {
         if let wildcard = wildcard {
             try container.encode(wildcard, forKey: .wildcard)
         }
-        if keyStorage.count > 0 {
+        if keyStorage?.count ?? 0 > 0 {
             var ecodableKeyStorage: [String: [Box<StorageValue>]] = [:]
-            keyStorage.forEach { (key, value) in
+            keyStorage?.forEach { (key, value) in
                 ecodableKeyStorage["\(key)"] = value
             }
             try container.encode(ecodableKeyStorage, forKey: .keyStorage)
         }
-        if storage.count > 0 {
+        if let storage = self.storage {
             try container.encode(storage, forKey: .storage)
         }
     }

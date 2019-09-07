@@ -8,7 +8,7 @@ final class MothiTests: XCTestCase {
     func testToooMaaaanyEndpoints() {
         let sut = Server()
         
-        let maxNumber = 100_000
+        let maxNumber = 10_000
         var startTime = now()
         for i in 0..<maxNumber {
             sut.get("/test/\(i)") { (req, res, loop)  in
