@@ -50,7 +50,7 @@ open class Server: Router {
         do {
             try serverChannel?.close(mode: .all).wait()
         }.catch {
-            print("\(error))
+            print("\(error)")
         }
     }
 
