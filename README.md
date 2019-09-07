@@ -1,4 +1,4 @@
-# Mothi
+# Mothi [![Build Status](https://travis-ci.org/MaciejGad/Mothi.svg?branch=master)](https://travis-ci.org/MaciejGad/Mothi)
 🕸️🔨 Micro web server written in Swift using Swift-NIO 
 
 ## Usage
