@@ -47,7 +47,11 @@ open class Server: Router {
     }
     
     deinit {
-      serverChannel?.close()
+        do {
+            try serverChannel?.close(mode: .all).wait()
+        }.catch {
+            print("\(error))
+        }
     }
 
 }
