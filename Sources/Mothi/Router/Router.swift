@@ -14,7 +14,7 @@ open class Router {
     
     private let tree = Tree<Middleware, HTTPMethod>()
     
-    func use(_ path: Path = "/*", method: HTTPMethod? = nil, middleware: @escaping Middleware) {
+    func use(_ path: Path = "*", method: HTTPMethod? = nil, middleware: @escaping Middleware) {
         tree.store(path: path, key: method, value: middleware)
     }
  
