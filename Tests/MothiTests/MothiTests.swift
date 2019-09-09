@@ -17,7 +17,7 @@ final class MothiTests: XCTestCase {
     
     func testToooMaaaanyEndpoints() {
         
-        let maxNumber = 10_000
+        let maxNumber = 100_000
         var startTime = now()
         for i in 0..<maxNumber {
             sut.get("/test/\(i)") { (req, res, loop)  in
@@ -76,6 +76,7 @@ final class MothiTests: XCTestCase {
         print(String(format: "avg response time %0.2f ms", time/Double(maxNumber) * 1000 ))
     
     }
+    
     static var allTests = [
         ("testToooMaaaanyEndpoints", testToooMaaaanyEndpoints),
         ("testResponseTime", testResponseTime)

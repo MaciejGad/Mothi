@@ -2,6 +2,11 @@ import XCTest
 import Yggdrasil
 
 final class YggdrasilTests: XCTestCase {
+    
+    override func setUp() {
+        super.setUp()
+        continueAfterFailure = false
+    }
 
     func testTreenOneStaticBranch() {
         //given
@@ -44,7 +49,7 @@ final class YggdrasilTests: XCTestCase {
         
         
         //when
-        tree.store(path: "/*", value: Value(givenLabel))
+        tree.store(path: "*", value: Value(givenLabel))
         
         //then
         let out = tree.withdraw(path: "/1", key: givenKey)
@@ -58,7 +63,7 @@ final class YggdrasilTests: XCTestCase {
         let tree = Tree<Value, String>()
         
         //when
-        tree.store(path: "/*", value: "wildcard")
+        tree.store(path: "*", value: "wildcard")
         tree.store(path: "/:id", value: "dynamic")
         tree.store(path: "/1", value: "static")
         
@@ -77,7 +82,7 @@ final class YggdrasilTests: XCTestCase {
         let tree = Tree<Value, String>()
         
         //when
-        tree.store(path: "/*", value: "wildcard")
+        tree.store(path: "*", value: "wildcard")
         tree.store(path: "/:id", value: "dynamic")
         tree.store(path: "/1", value: "static")
         
@@ -116,7 +121,7 @@ final class YggdrasilTests: XCTestCase {
         //when
         tree.store(path: "/test", value: "static /test")
         tree.store(path: "/test/short", value: "static /test/short")
-        tree.store(path: "/*", value: "widlcard for /*")
+        tree.store(path: "*", value: "widlcard for /*")
 
         //then
         let out = tree.withdraw(path: "/test/short/branch", key: "any")
@@ -133,8 +138,8 @@ final class YggdrasilTests: XCTestCase {
         //when
         tree.store(path: "/test", value: "static /test")
         tree.store(path: "/test/short", value: "static /test/short")
-        tree.store(path: "/*", value: "widlcard for /*")
-        tree.store(path: "/*", value: "2nd widlcard for /*")
+        tree.store(path: "*", value: "widlcard for /*")
+        tree.store(path: "*", value: "2nd widlcard for /*")
         
         //then
         let out = tree.withdraw(path: "/test/short/branch", key: "any")
@@ -160,6 +165,55 @@ final class YggdrasilTests: XCTestCase {
         tree.varDump()
     }
     
+    func testRoot() {
+        //given
+        let tree = Tree<Value, String>()
+        
+        tree.store(path: "/", key: "GET", value: "Root")
+        //then
+        let out = tree.withdraw(path: "/", key: "GET")
+        XCTAssertEqual(out.count, 1)
+        XCTAssertEqual(out[0].value.label, "Root")
+        tree.varDump()
+        
+    }
+    
+    func testWildcardRoot() {
+        //given
+        let tree = Tree<Value, String>()
+        
+        tree.store(path: "*", key: "GET", value: "Wildcard")
+        tree.varDump()
+        
+        //then
+        let out1 = tree.withdraw(path: "/test", key: "GET")
+        XCTAssertEqual(out1.count, 1)
+        XCTAssertEqual(out1[0].value.label, "Wildcard")
+        
+        let out2 = tree.withdraw(path: "/", key: "GET")
+        XCTAssertEqual(out2.count, 1)
+        XCTAssertEqual(out2[0].value.label, "Wildcard")
+        
+        
+    }
+    
+    func testStaticAndDynamic() {
+        //given
+        let tree = Tree<Value, String>()
+        
+        tree.store(path: "/text/:id", key: "GET", value: "Static + dynamic")
+        tree.store(path: "/text/other/:id", key: "GET", value: "Static + static + dynamic")
+        
+        //then
+        let out1 = tree.withdraw(path: "/text/1", key: "GET")
+        XCTAssertEqual(out1.count, 1)
+        XCTAssertEqual(out1[0].params["id"], "1")
+        
+        let out2 = tree.withdraw(path: "/text/other/2", key: "GET")
+        XCTAssertEqual(out2.count, 1)
+        XCTAssertEqual(out2[0].params["id"], "2")
+    }
+    
     static var allTests = [
         ("testTreenOneStaticBranch", testTreenOneStaticBranch),
         ("testTreenOneDynamicBranch", testTreenOneDynamicBranch),
@@ -169,7 +223,10 @@ final class YggdrasilTests: XCTestCase {
         ("testBoxForTwoSameStaticBranches", testBoxForTwoSameStaticBranches),
         ("testShortBranch", testShortBranch),
         ("testTwoWildcards", testTwoWildcards),
-        ("testKey", testKey)        
+        ("testKey", testKey),
+        ("testRoot", testRoot),
+        ("testWildcardRoot", testWildcardRoot),
+        ("testStaticAndDynamic", testStaticAndDynamic),
     ]
 }
 

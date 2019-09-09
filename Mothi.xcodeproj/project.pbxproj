@@ -186,7 +186,6 @@
 		OBJ_487 /* CNIOLinux.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = "swift-nio::CNIOLinux::Product" /* CNIOLinux.framework */; };
 		OBJ_499 /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_29 /* Box.swift */; };
 		OBJ_500 /* Node.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_30 /* Node.swift */; };
-		OBJ_501 /* NodeType.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_31 /* NodeType.swift */; };
 		OBJ_502 /* Tree.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_32 /* Tree.swift */; };
 		OBJ_508 /* XCTestManifests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_40 /* XCTestManifests.swift */; };
 		OBJ_509 /* YggdrasilTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = OBJ_41 /* YggdrasilTests.swift */; };
@@ -673,7 +672,7 @@
 		"Mothi::MothiExampleTests::Product" /* MothiExampleTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = MothiExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		"Mothi::MothiTests::Product" /* MothiTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = MothiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		"Mothi::Yggdrasil::Product" /* Yggdrasil.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Yggdrasil.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		"Mothi::YggdrasilTests::Product" /* YggdrasilTests.xctest */ = {isa = PBXFileReference; lastKnownFileType = file; path = YggdrasilTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		"Mothi::YggdrasilTests::Product" /* YggdrasilTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = YggdrasilTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		OBJ_10 /* HTTPError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPError.swift; sourceTree = "<group>"; };
 		OBJ_100 /* Linux.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Linux.swift; sourceTree = "<group>"; };
 		OBJ_101 /* LinuxCPUSet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinuxCPUSet.swift; sourceTree = "<group>"; };
@@ -729,7 +728,6 @@
 		OBJ_27 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		OBJ_29 /* Box.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 		OBJ_30 /* Node.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Node.swift; sourceTree = "<group>"; };
-		OBJ_31 /* NodeType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NodeType.swift; sourceTree = "<group>"; };
 		OBJ_32 /* Tree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tree.swift; sourceTree = "<group>"; };
 		OBJ_35 /* MothiExampleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MothiExampleTests.swift; sourceTree = "<group>"; };
 		OBJ_37 /* MothiTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MothiTests.swift; sourceTree = "<group>"; };
@@ -1188,7 +1186,6 @@
 			children = (
 				OBJ_29 /* Box.swift */,
 				OBJ_30 /* Node.swift */,
-				OBJ_31 /* NodeType.swift */,
 				OBJ_32 /* Tree.swift */,
 			);
 			name = Yggdrasil;
@@ -2110,7 +2107,6 @@
 			files = (
 				OBJ_499 /* Box.swift in Sources */,
 				OBJ_500 /* Node.swift in Sources */,
-				OBJ_501 /* NodeType.swift in Sources */,
 				OBJ_502 /* Tree.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3477,7 +3473,7 @@
 				OTHER_CFLAGS = "$(inherited)";
 				OTHER_LDFLAGS = "$(inherited)";
 				OTHER_SWIFT_FLAGS = "$(inherited)";
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) Encodable";
 				SWIFT_VERSION = 5.0;
 				TARGET_NAME = YggdrasilTests;
 				TVOS_DEPLOYMENT_TARGET = 9.0;

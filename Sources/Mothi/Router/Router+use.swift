@@ -4,16 +4,16 @@ import NIOHTTP1
 extension Router {
 
     //simple use
-    open func use(_ path: Path = "/*", method: HTTPMethod? = nil, middleware: @escaping NextMiddleware) {
+    open func use(_ path: Path = "*", method: HTTPMethod? = nil, middleware: @escaping NextMiddleware) {
         use(path, method:method, middleware: wrapp(middleware))
     }
     
-    open func use(_ path: Path = "/*", method: HTTPMethod? = nil, middleware: @escaping SynchMiddleware) {
+    open func use(_ path: Path = "*", method: HTTPMethod? = nil, middleware: @escaping SynchMiddleware) {
         use(path, method:method, middleware: wrapp(middleware))
     }
     
     //require body
-    func use(_ path: Path = "/*", method: HTTPMethod? = nil, requireBody: Bool, middleware: @escaping Middleware) {
+    func use(_ path: Path = "*", method: HTTPMethod? = nil, requireBody: Bool, middleware: @escaping Middleware) {
         use(path, method: method) { (req, res, loop) -> MiddlewareOutput in
 
             if requireBody {
@@ -25,16 +25,16 @@ extension Router {
         }
     }
     
-    func use(_ path: Path = "/*", method: HTTPMethod? = nil, requireBody: Bool, middleware: @escaping SynchMiddleware) {
+    func use(_ path: Path = "*", method: HTTPMethod? = nil, requireBody: Bool, middleware: @escaping SynchMiddleware) {
         use(path, method: method, requireBody: requireBody, middleware: wrapp(middleware))
     }
     
-    func use(_ path: Path = "/*", method: HTTPMethod? = nil, requireBody: Bool, middleware: @escaping NextMiddleware) {
+    func use(_ path: Path = "*", method: HTTPMethod? = nil, requireBody: Bool, middleware: @escaping NextMiddleware) {
         use(path, method: method, requireBody: requireBody, middleware: wrapp(middleware))
     }
     
     //encodable output
-    func use<Output>(_ path: Path = "/*", method: HTTPMethod? = nil, middleware: @escaping EncodableOutput<Output>) where Output: Encodable {
+    func use<Output>(_ path: Path = "*", method: HTTPMethod? = nil, middleware: @escaping EncodableOutput<Output>) where Output: Encodable {
         use(path, method: method) { (req, res, loop) -> MiddlewareOutput in
             let output: Output = try middleware(req)
             res.send(output)
@@ -43,7 +43,7 @@ extension Router {
     }
     
     //input & output
-    func use<Input, Output>(_ path: Path = "/*", method: HTTPMethod? = nil, middleware: @escaping DecodableInputEncodableOutput<Input, Output>) where Input: Decodable, Output: Encodable {
+    func use<Input, Output>(_ path: Path = "*", method: HTTPMethod? = nil, middleware: @escaping DecodableInputEncodableOutput<Input, Output>) where Input: Decodable, Output: Encodable {
         use(path, method: method, requireBody: true) { (req, res, loop) -> MiddlewareOutput in
             let input: Input = try req.object()
             let output: Output = try middleware(input)
@@ -53,7 +53,7 @@ extension Router {
     }
     
     //input
-    func use<Input>(_ path: Path = "/*", method: HTTPMethod? = nil, middleware: @escaping DecodableInput<Input>) where Input: Decodable {
+    func use<Input>(_ path: Path = "*", method: HTTPMethod? = nil, middleware: @escaping DecodableInput<Input>) where Input: Decodable {
         use(path, method: method, requireBody: true) { (req, res, loop) -> MiddlewareOutput in
             let input: Input = try req.object()
             return try middleware(input, res, loop)
@@ -61,7 +61,7 @@ extension Router {
     }
     
     //sync input
-    func use<Input>(_ path: Path = "/*", method: HTTPMethod? = nil, middleware: @escaping SynchDecodableInput<Input>) where Input: Decodable {
+    func use<Input>(_ path: Path = "*", method: HTTPMethod? = nil, middleware: @escaping SynchDecodableInput<Input>) where Input: Decodable {
         use(path, method: method, requireBody: true) { (req, res, loop) -> MiddlewareOutput in
             let input: Input = try req.object()
             let next = try middleware(input, res)
@@ -69,7 +69,7 @@ extension Router {
         }
     }
     //next input
-    func use<Input>(_ path: Path = "/*", method: HTTPMethod? = nil, middleware: @escaping NextDecodableInput<Input>) where Input: Decodable {
+    func use<Input>(_ path: Path = "*", method: HTTPMethod? = nil, middleware: @escaping NextDecodableInput<Input>) where Input: Decodable {
         use(path, method: method, requireBody: true) { (req, res, loop) -> MiddlewareOutput in
             let input: Input = try req.object()
             try middleware(input, res)

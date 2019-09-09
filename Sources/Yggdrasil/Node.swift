@@ -3,7 +3,6 @@ import Foundation
 
 
 final class Node<StorageValue, Key:Hashable> {
-    let type: NodeType
     let value: String
     
     
@@ -15,45 +14,45 @@ final class Node<StorageValue, Key:Hashable> {
     var keyStorage:[Key: [Box<StorageValue>]]? = nil
     var storage: [Box<StorageValue>]? = nil
 
-    init(value: String, type: NodeType) {
-        self.type = type
+    init(value: String) {
         self.value = value
     }
     
     private init() {
-        type = .root
         value = "/"
     }
     static var root: Node {
         return .init()
     }
     
-    
-    func createChild(for component: String) -> Node {
-        let type = NodeType.from(pathComponent: component)
-        switch type {
-        case .wildcard:
+    func createChild(path: inout String, index: inout String.Index) -> Node {
+        let slashRange = path.range(of: "/", range: index..<path.endIndex)
+        let valueEndIndex = slashRange?.lowerBound ?? path.endIndex
+        let value = String(path[index..<valueEndIndex])
+        index = slashRange?.upperBound ?? path.endIndex
+        switch value {
+        case "*":
             if let wildcard = wildcard {
                 return wildcard
             }
-            let node = Node(value: component, type: type)
+            let node = Node(value: value)
             self.wildcard = node
             return node
-        case .dynamic:
-            return createOrReuseNode(value: component, type: type, container: &dynamics)
+        case let key where key.hasPrefix(":"):
+            return createOrReuseNode(value: value, container: &dynamics)
         default:
-            return createOrReuseNode(value: component, type: type, container: &statics)
+            return createOrReuseNode(value: value, container: &statics)
         }
     }
     
-    func createOrReuseNode(value: String, type: NodeType, container: inout [String: Node]?) -> Node {
+    func createOrReuseNode(value: String, container: inout [String: Node]?) -> Node {
         if container == nil {
             container = [:]
         }
         if let node = container?[value] {
             return node
         }
-        let node = Node(value: value, type: type)
+        let node = Node(value: value)
         container?[value] = node
         return node
     }
@@ -93,7 +92,6 @@ final class Node<StorageValue, Key:Hashable> {
 
 extension Node: Encodable {
     enum Keys: String, CodingKey {
-        case type
         case value
         case statics
         case dynamics
@@ -105,7 +103,6 @@ extension Node: Encodable {
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: Keys.self)
         
-        try container.encode(type, forKey: .type)
         try container.encode(value, forKey: .value)
         if statics?.count ?? 0 > 0 {
             try container.encode(statics, forKey: .statics)

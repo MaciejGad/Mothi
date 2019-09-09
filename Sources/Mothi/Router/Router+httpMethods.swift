@@ -8,19 +8,19 @@ public extension Router {
     /// Register a middleware which triggers on a `GET`
     /// with a specific path prefix.
     
-    func get(_ path: Path = "/*", middleware: @escaping Middleware) {
+    func get(_ path: Path = "*", middleware: @escaping Middleware) {
         use(path, method: .GET, middleware: middleware)
     }
     
-    func get(_ path: Path = "/*", middleware: @escaping NextMiddleware) {
+    func get(_ path: Path = "*", middleware: @escaping NextMiddleware) {
         use(path, method: .GET, middleware: middleware)
     }
     
-    func get(_ path: Path = "/*", middleware: @escaping SynchMiddleware) {
+    func get(_ path: Path = "*", middleware: @escaping SynchMiddleware) {
         use(path, method: .GET, middleware: middleware)
     }
     
-    func get<Output>(_ path: Path  = "/*", middleware: @escaping EncodableOutput<Output>) where Output: Encodable {
+    func get<Output>(_ path: Path  = "*", middleware: @escaping EncodableOutput<Output>) where Output: Encodable {
         use(path, method: .GET, middleware: middleware)
     }
     func get<Output>(_ path: Path, middleware: @escaping EncodableSimpleOutput<Output>) where Output: Encodable {

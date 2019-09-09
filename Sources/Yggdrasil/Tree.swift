@@ -2,6 +2,8 @@ import Foundation
 
 public final class Tree<Value, Key:Hashable> {
     let root = Node<Value, Key>.root
+    let wildcard = Node<Value, Key>(value: "*")
+    
     public private(set) var count = 0
     
     public init() {}
@@ -9,11 +11,22 @@ public final class Tree<Value, Key:Hashable> {
     public func store(path: String, key: Key? = nil, value: Value) {
         let box = Box(order: count, value: value)
         count += 1
-        let pathComponents = path.components(separatedBy: "/").dropFirst()
-        var node: Node = root
-        for component in pathComponents {
-            node = node.createChild(for: component)
+        
+        var path: String = path
+        var node:Node<Value, Key>
+        if path == "*" || path == "" {
+            node = wildcard
+        } else {
+            var index = path.startIndex
+            if path.hasPrefix("/") {
+                index = path.index(after: index)
+            }
+            node = root
+            while index != path.endIndex {
+                node = node.createChild(path: &path, index: &index)
+            }
         }
+        
         if let key = key {
             node.store(box: box, key: key)
         } else {
@@ -22,42 +35,59 @@ public final class Tree<Value, Key:Hashable> {
     }
     
     public func withdraw(path: String, key: Key) -> [Box<Value>] {
-        let pathComponenets = path.components(separatedBy: "/").dropFirst()
-        return withdraw(pathComponents: pathComponenets, for: root, key: key).sorted(by: { (lhs, rhs) -> Bool in
-            lhs.order < rhs.order
-        })
-    }
-    
-    func withdraw(pathComponents: ArraySlice<String>, for node: Node<Value, Key>, key: Key) -> [Box<Value>] {
-        guard pathComponents.count > 0 else {
-            return node.boxes(key: key)
-        }
-        guard !node.leaf else {
-            if node.type == .wildcard {
-                return node.boxes(key: key)
-            }
+        guard path.count > 0 else {
             return []
         }
-        var pathComponents = pathComponents
-        let value = pathComponents.removeFirst()
-        var out:[Box<Value>] = []
+        let startIndex = path.index(after: path.startIndex)
+        var output:[Box<Value>] = []
+        output.append(contentsOf: wildcard.boxes(key: key))
+        
+        withdraw(path: path, index: startIndex, for: root, key: key, output: &output)
+        
+        output.sort { (lhs, rhs) -> Bool in
+            lhs.order < rhs.order
+        }
+        return output
+    }
+    
+    func withdraw(path: String, index: String.Index, for node: Node<Value, Key>, key: Key, output: inout [Box<Value>]) {
+        guard index < path.endIndex else {
+            output.append(contentsOf: node.boxes(key: key))
+            return
+        }
+        guard !node.leaf else {
+            return
+        }
+        
+        let slashRange = path.range(of: "/", range: index..<path.endIndex)
+        let valueEndIndex = slashRange?.lowerBound ?? path.endIndex
+        let value = String(path[index..<valueEndIndex])
+        let nextIndex = slashRange?.upperBound ?? path.endIndex
+        
+
+        
         if let wildcard = node.wildcard {
-            out.append(contentsOf: withdraw(pathComponents: pathComponents, for: wildcard, key: key))
+            if wildcard.leaf {
+                output.append(contentsOf: wildcard.boxes(key: key))
+            } else {
+                withdraw(path: path, index: nextIndex, for: wildcard, key: key, output: &output)
+            }
         }
         if let staticNode = node.statics?[value] {
-            out.append(contentsOf: withdraw(pathComponents: pathComponents, for: staticNode, key: key))
+            withdraw(path: path, index: nextIndex, for: staticNode, key: key, output: &output)
         }
         if let dynamics = node.dynamics?.values {
             for dynamicNode in dynamics {
-                let dyniamicMiddlewares = withdraw(pathComponents: pathComponents, for: dynamicNode, key: key)
+                var out:[Box<Value>] = []
+                withdraw(path: path, index: nextIndex,for: dynamicNode, key: key, output: &out)
                 let key = String(dynamicNode.value.dropFirst())
-                dyniamicMiddlewares.forEach {
+                out.forEach {
                     $0.params[key] = value
                 }
-                out.append(contentsOf: dyniamicMiddlewares)
+                output.append(contentsOf: out)
             }
         }
-        return out
+        return
     }
     
     
