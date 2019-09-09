@@ -7,13 +7,13 @@ import Yggdrasil
 final class HTTPHandler: ChannelInboundHandler {
     typealias InboundIn = HTTPServerRequestPart
     
-    let router: Router
+    weak var router: Router?
     var buffer = ByteBufferAllocator().buffer(capacity: 4096)
     var requestHead: HTTPRequestHead? = nil
     
-    var middlewares: [Box<Middleware>] = []
+    var middlewares: [Box<Middleware>]? = nil
     
-    init(router: Router) {
+    init(router: Router?) {
         self.router = router
     }
     
@@ -50,7 +50,7 @@ final class HTTPHandler: ChannelInboundHandler {
             }.flatMap { (request, response) -> EventLoopFuture<Response> in
                 
                 
-                guard self.middlewares.count > 0 else {
+                guard self.middlewares?.count ?? 0 > 0 else {
                     response.send(HTTPError.notFound)
                     return loop.makeSucceededFuture(response)
                 }
@@ -78,7 +78,7 @@ final class HTTPHandler: ChannelInboundHandler {
     }
     
     func callMiddleware(request: Request, response: Response, loop: EventLoop, endingPromise: EventLoopPromise<Response>) {
-        guard let middleware = self.middlewares.popLast() else {
+        guard let middleware = self.middlewares?.popLast() else {
             endingPromise.succeed(response)
             return
         }
@@ -100,7 +100,7 @@ final class HTTPHandler: ChannelInboundHandler {
     }
     
     func setupMiddlewares(request: Request) {
-        middlewares = router.middlewares(for: request.path, method: request.method).reversed()
+        middlewares = router?.middlewares(for: request.path, method: request.method).reversed()
     }
     
 }

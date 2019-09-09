@@ -15,7 +15,7 @@ open class Server: Router {
             .serverChannelOption(ChannelOptions.backlog, value: 256)
             .serverChannelOption(reuseAddrOpt, value: 1)
             
-            .childChannelInitializer { channel in
+            .childChannelInitializer {[weak self] channel in
                 channel.pipeline.configureHTTPServerPipeline().flatMap {
                     channel.pipeline.addHandler(HTTPHandler(router: self))
                 }

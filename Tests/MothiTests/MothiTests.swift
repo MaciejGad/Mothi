@@ -3,8 +3,19 @@ import XCTest
 
 final class MothiTests: XCTestCase {
     
+    var sut: Server!
+    
+    override func setUp() {
+        super.setUp()
+        sut = Server()
+    }
+    
+    override func tearDown() {
+        sut = nil
+        super.tearDown()
+    }
+    
     func testToooMaaaanyEndpoints() {
-        let sut = Server()
         
         let maxNumber = 10_000
         var startTime = now()
@@ -39,7 +50,6 @@ final class MothiTests: XCTestCase {
     }
 
     func testResponseTime() throws {
-        let sut = Server()
         
         let maxNumber = 100
         
