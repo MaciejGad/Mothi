@@ -3,10 +3,19 @@ import XCTest
 
 final class MothiTests: XCTestCase {
     
-    let serverQueue: DispatchQueue = .init(label: "server_queue", qos: .background, attributes: .concurrent)
+    var sut: Server!
+    
+    override func setUp() {
+        super.setUp()
+        sut = Server()
+    }
+    
+    override func tearDown() {
+        sut = nil
+        super.tearDown()
+    }
     
     func testToooMaaaanyEndpoints() {
-        let sut = Server()
         
         let maxNumber = 10_000
         var startTime = now()
@@ -19,7 +28,7 @@ final class MothiTests: XCTestCase {
         let duration = now() - startTime
         print(String(format: "middleware creating time %0.2f s for \(maxNumber) endpoints",  duration))
         
-        let port = 1337 + Int.random(in: 0..<100)
+        let port = 1337
         sut.listen(host:"localhost" , port: port, asynch: true)
         let expectation = self.expectation(description: "API call")
         let random = Int.random(in: 0..<maxNumber)
@@ -36,12 +45,11 @@ final class MothiTests: XCTestCase {
             
             expectation.fulfill()
         }.resume()
-        self.waitForExpectations(timeout: 5000, handler: nil)
+        self.waitForExpectations(timeout: 5, handler: nil)
 
     }
 
     func testResponseTime() throws {
-        let sut = Server()
         
         let maxNumber = 100
         
@@ -52,7 +60,7 @@ final class MothiTests: XCTestCase {
         }
     
         
-        let port = 1337 + Int.random(in: 0..<100)
+        let port = 1337
         sut.listen(host:"localhost" , port: port, asynch: true)
         guard let url = URL(string: "http://localhost:\(port)/test") else {
             XCTFail("Wrong url")

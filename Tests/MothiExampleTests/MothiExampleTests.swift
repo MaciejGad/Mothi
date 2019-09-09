@@ -185,7 +185,7 @@ extension MothiExampleTests {
         }
         
         host = "localhost"
-        port = 1300 + Int.random(in: 0..<100)
+        port = 1337 
         
         let fooBinary = productsDirectory.appendingPathComponent("MothiExample")
         
